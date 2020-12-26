@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="MyResultMap" type="com.example.demo.entity.Role" >
+        <id column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <collection property="permissionList" ofType="com.example.demo.entity.Permission">
+            <id column="pms_id" property="pmsId" jdbcType="INTEGER" />
+            <result column="url" property="url" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="pms_name" property="pmsName" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+    <select id="selectRolesByUserId" resultMap="MyResultMap" parameterType="java.lang.Integer" >
+    select r.*, p.*
+    from user_role ur
+    left join role r on ur.role_id = r.role_id
+    left join role_permission rp on r.role_id = rp.role_id
+    left join permission p on rp.pms_id = p.pms_id
+    where ur.user_id = #{userID};
+  </select>
+
+
+</mapper>
