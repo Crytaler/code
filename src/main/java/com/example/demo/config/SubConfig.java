@@ -19,7 +19,7 @@
 //    RedisMessageListenerContainer redisContainer(RedisConnectionFactory factory) {
 //        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 //        container.setConnectionFactory(factory);
-//        container.addMessageListener(messageListenerAdapter(), new ChannelTopic( "log" ));
+//        container.addMessageListener(messageListenerAdapter(), new ChannelTopic( "test" ));
 //        return container;
 //    }
 //}
