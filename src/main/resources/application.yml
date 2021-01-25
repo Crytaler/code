@@ -33,11 +33,20 @@ spring:
 #    solr:
 #      host: http://192.168.1.14:8983/solr
   redis:
-    host: 192.168.0.110
+    host: 192.168.0.114
     port: 6379
     password:
     timeout: 20000
+    database: 10
 
+    second:
+      host: 192.168.0.114
+      port: 6379
+      password:
+      timeout: 20000
+      database: 11
+  main:
+    allow-bean-definition-overriding: true
 swagger:
   enabled: true
 
@@ -49,4 +58,5 @@ mybatis-plus:
     map-underscore-to-camel-case: false
 server:
   port: 8210
+
 
