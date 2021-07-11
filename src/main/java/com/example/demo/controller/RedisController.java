@@ -80,4 +80,13 @@ public class RedisController {
 //        }
         return "成功";
     }
+
+    public static void main(String[] args) {
+        Integer d = new Integer(200);
+        int b = 200;
+        Integer c = 200;
+        System.out.println(d.equals(b));
+        System.out.println(d == b);
+        System.out.println(d == c);
+    }
 }
