@@ -17,8 +17,12 @@ public class Array {
     public static void main(String[] args) {
 
         int[] num1 = {1,2,3,8,9,9};
-        Boolean aBoolean = containDup(num1);
-        System.out.println(aBoolean);
+        int[] ints = sortArrayByParity(num1);
+        for (int anInt : ints) {
+            System.out.println(anInt);
+        }
+//        Boolean aBoolean = containDup(num1);
+//        System.out.println(aBoolean);
 //        int i = removeDuplicates(num1);
 //        int[] merge = twoSum(num1, 5);
 //        int[] num2 = {2,5,6};
@@ -27,8 +31,8 @@ public class Array {
 //            System.out.println(i1);
 //        }
 
-        int i = removeElement(num1, 9);
-        System.out.println(i);
+//        int i = removeElement(num1, 9);
+//        System.out.println(i);
 
     }
 
@@ -118,5 +122,27 @@ public class Array {
             }
         }
         return false;
+    }
+
+    // 如果是 (0, 1)，那么万事大吉 i++ 并且 j--。
+    //如果是 (1, 0)，那么交换两个元素，然后继续。
+    //如果是 (0, 0)，那么说明 i 位置是正确的，只能 i++。
+    //如果是 (1, 1)，那么说明 j 位置是正确的，只能 j--。
+    public static int[] sortArrayByParity(int[] nums) {
+        int i = 0, j = nums.length-1;
+        while (i < j) {
+            if (nums[i] % 2 > nums[j] % 2) {
+                int tmp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = tmp;
+            }
+            if (nums[i] % 2 == 0){
+                i++;
+            }
+            if (nums[j] % 2 == 1) {
+                j--;
+            }
+        }
+        return nums;
     }
 }
