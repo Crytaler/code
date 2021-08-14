@@ -1,9 +1,6 @@
 package com.example.demo.algorithm;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @ClassName Array
@@ -16,11 +13,19 @@ public class Array {
 
     public static void main(String[] args) {
 
-        int[] num1 = {1,2,3,8,9,9};
-        int[] ints = sortArrayByParity(num1);
-        for (int anInt : ints) {
-            System.out.println(anInt);
-        }
+        int[] num1 = {4,5,6,7,0,1,2};
+        int search = search(num1, 0);
+        System.out.println(search);
+//        int[] ints = twoSum2(num1,9);
+//        int[] ints = sortArrayByParity(num1);
+//        List<List<Integer>> lists = threeSum(num1);
+//        for (List<Integer> list : lists) {
+//            System.out.println(list);
+//        }
+//        int[] ints = moveZeroes(num1);
+//        for (int anInt : ints) {
+//            System.out.println(anInt);
+//        }
 //        Boolean aBoolean = containDup(num1);
 //        System.out.println(aBoolean);
 //        int i = removeDuplicates(num1);
@@ -144,5 +149,141 @@ public class Array {
             }
         }
         return nums;
+    }
+
+    // 2,7,8,11,15 -->10
+//    public static int[] twoSum2(int[] numbers, int target) {
+//        Map<Integer, Integer> map = new HashMap<>();
+//        for (int i = 0; i < numbers.length; i++) {
+//            int result = target - numbers[i];
+//            if (map.containsKey(result)) {
+//                return new int[]{++i,map.get(result)+1};
+//            }
+//            map.put(numbers[i],i);
+//        }
+//        return null;
+//    }
+
+    public static int[] twoSum2(int[] nums, int target) {
+        int left = 0, right = nums.length-1;
+        while (left < right) {
+            int sum = nums[left] + nums[right];
+            if (sum == target) {
+                return new int[]{left+1,right+1};
+            }else if (sum > target) {
+                --right;
+            }else {
+                ++left;
+            }
+        }
+        return new int[]{-1,-1};
+    }
+
+    // 输入: [0,1,0,3,12]
+    // 输出: [1,3,12,0,0]
+    public static int[] moveZeroes(int[] nums){
+        int left = 0, right = 0, n = nums.length;
+        while(right < n) {
+            if(nums[right] != 0) {
+                int tmp = nums[left];
+                nums[left] = nums[right];
+                nums[right] = tmp;
+                left++;
+            }
+            right++;
+        }
+        return nums;
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums){
+        List<List<Integer>> res = new ArrayList<>();
+        int len = nums.length;
+        if (len < 3){
+            return res;
+        }
+        Arrays.sort(nums);
+        for (int i = 0; i < len; i++) {
+            if (nums[i] > 0) {
+                break;
+            }
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int L = i + 1, R = len - 1;
+            while (L < R) {
+                int sum = nums[i] + nums[L] + nums[R];
+                if (sum == 0) {
+                    res.add(Arrays.asList(nums[i],nums[L],nums[R]));
+                    while (L < R && nums[L] == nums[L+1]){
+                        L++;
+                    };
+                    while (L < R && nums[R] == nums[R-1]){
+                        R--;
+                    };
+                    L++;
+                    R--;
+                }else if (sum < 0){
+                    L++;
+                }else if (sum > 0){
+                    R--;
+                }
+            }
+        }
+        return res;
+    }
+
+
+    public static int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int start = 0, end = nums.length - 1, mid;
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            //前半部分有序,注意此处用小于等于
+            if (nums[start] <= nums[mid]) {
+                //target在前半部分
+                if (target >= nums[start] && target < nums[mid]) {
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            } else {
+                if (target <= nums[end] && target > nums[mid]) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+
+        }
+        return -1;
+    }
+
+    public static int[] intersection(int[] nums1, int[] nums2) {
+        Set<Integer> set = new HashSet<>();
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int i = 0, j = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums1[i] == nums2[j]) {
+                set.add(nums1[i]);
+                i++;
+                j++;
+            } else if (nums1[i] < nums2[j]) {
+                i++;
+            } else if (nums1[i] > nums2[j]) {
+                j++;
+            }
+        }
+        int[] res = new int[set.size()];
+        int index = 0;
+        for (int num : set) {
+            res[index++] = num;
+        }
+        return res;
     }
 }

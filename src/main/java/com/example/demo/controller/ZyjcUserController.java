@@ -5,6 +5,7 @@ import com.example.demo.entity.ZyjcUser;
 import com.example.demo.service.IZyjcUserService;
 import com.example.demo.util.ExcelUtils;
 import com.example.demo.util.ExportPdf;
+import com.google.common.collect.Lists;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +70,35 @@ public class ZyjcUserController {
         List<ZyjcUser> users = iZyjcUserService.list();
         if(users != null && users.size() > 0){
             ExcelUtils.exportExcel(users, null, "用户数据", ZyjcUser.class, "用户2020200623.xlsx", response);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        ArrayList<Integer> allList = new ArrayList<>();
+        allList.add(1);
+        allList.add(2);
+        allList.add(3);
+        allList.add(4);
+        allList.add(5);
+        allList.add(6);
+        allList.add(7);
+        allList.add(8);
+        allList.add(9);
+
+        for (Integer integer : allList) {
+            System.out.println(integer);
+        }
+
+
+        List<List<Integer>> partition = Lists.partition(allList, 5);
+        for (List<Integer> integers : partition) {
+            allList.removeAll(integers);
+        }
+        System.out.println("============"+allList.size());
+
+        for (Integer integer : allList) {
+            System.out.println(integer);
         }
     }
 

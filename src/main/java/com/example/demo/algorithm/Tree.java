@@ -13,13 +13,18 @@ public class Tree {
 
     public static void main(String[] args) {
         TreeNode treeNode = initTreeNode();
-//        int i = maxDepth(treeNode);
-//        System.out.println(i);
-//        List<Integer> vals = postorderTraversal(treeNode);
-        List<List<Integer>> lists = levelOrder(treeNode);
+        List<List<Integer>> lists = zigzagLevelOrder(treeNode);
         for (List<Integer> list : lists) {
             System.out.println(list);
         }
+//        TreeNode treeNode1 = invertTree(treeNode);
+//        int i = maxDepth(treeNode);
+//        System.out.println(i);
+//        List<Integer> vals = postorderTraversal(treeNode);
+//        List<List<Integer>> lists = levelOrder(treeNode);
+//        for (List<Integer> list : lists) {
+//            System.out.println(list);
+//        }
 
     }
 
@@ -114,6 +119,144 @@ public class Tree {
             res.add(level);
         }
         return res;
+    }
+
+    public static boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }else if (p == null || q == null) {
+            return false;
+        }else if (p.val != q.val) {
+            return false;
+        }
+        return isSameTree(p.left,q.left) && isSameTree(p.right,q.right);
+    }
+
+    public boolean isSymmetric(TreeNode root) {
+        if(root==null) {
+            return true;
+        }
+        //调用递归函数，比较左节点，右节点
+        return dfs(root.left,root.right);
+    }
+    boolean dfs(TreeNode left, TreeNode right) {
+        //递归的终止条件是两个节点都为空
+        //或者两个节点中有一个为空
+        //或者两个节点的值不相等
+        if(left==null && right==null) {
+            return true;
+        }
+        if(left==null || right==null) {
+            return false;
+        }
+        if(left.val!=right.val) {
+            return false;
+        }
+        //再递归的比较 左节点的左孩子 和 右节点的右孩子
+        //以及比较  左节点的右孩子 和 右节点的左孩子
+        return dfs(left.left,right.right) && dfs(left.right,right.left);
+    }
+
+    public static TreeNode invertTree(TreeNode root) {
+        //递归函数的终止条件，节点为空时返回
+        if(root==null) {
+            return null;
+        }
+        //下面三句是将当前节点的左右子树交换
+        TreeNode tmp = root.right;
+        root.right = root.left;
+        root.left = tmp;
+        //递归交换当前节点的 左子树
+        invertTree(root.left);
+        //递归交换当前节点的 右子树
+        invertTree(root.right);
+        //函数返回时就表示当前这个节点，以及它的左右子树
+        //都已经交换完了
+        return root;
+    }
+
+    public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        boolean isOrderLeft = true;
+        while (!queue.isEmpty()) {
+            Deque<Integer> levelList = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; ++i) {
+                TreeNode cur = queue.poll();
+                if (isOrderLeft) {
+                    levelList.offerLast(cur.val);
+                }else {
+                    levelList.offerFirst(cur.val);
+                }
+                if (cur.left != null) {
+                    queue.offer(cur.left);
+                }
+                if (cur.right != null) {
+                    queue.offer(cur.right);
+                }
+            }
+            res.add(new LinkedList<Integer>(levelList));
+            isOrderLeft = !isOrderLeft;
+        }
+        return res;
+    }
+
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if(left == null && right == null) return null; // 1.
+        if(left == null) return right; // 3.
+        if(right == null) return left; // 4.
+        return root; // 2. if(left != null and right != null)
+    }
+
+    public static List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                if (i == size - 1) { //将当前层的最后一个节点放入结果列表
+                    res.add(node.val);
+                }
+            }
+        }
+        return res;
+    }
+
+    public boolean isBalanced(TreeNode root) {
+        if (root == null)
+            return true;
+        //分别计算左子树和右子树的高度
+        int left = depth(root.left);
+        int right = depth(root.right);
+        //这两个子树的高度不能超过1，并且他的两个子树也必须是平衡二叉树
+        return Math.abs(left - right) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+    }
+
+    //计算树中节点的高度
+    public int depth(TreeNode root) {
+        if (root == null)
+            return 0;
+        return Math.max(depth(root.left), depth(root.right)) + 1;
     }
 
 }

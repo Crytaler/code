@@ -12,10 +12,19 @@ import java.util.*;
  **/
 public class LinkList {
     public static void main(String[] args) {
-        ListNode head1 = initLink();
-        ListNode head2 = initLinkSecond();
-
-        ListNode listNode = swapPairs(head1);
+        ListNode head = initLink();
+        ListNode head1 = initLink1();
+        ListNode head2 = initLink2();
+        ListNode[] lists = new ListNode[]{head,head1,head2};
+        ListNode listNode = mergeKLists(lists);
+//        int[] ints = reversePrint(head1);
+//        ListNode listNode = reverseKGroup(head1, 2);
+//        for (int anInt : ints) {
+//            System.out.println(anInt);
+//        }
+//        ListNode head2 = initLinkSecond();
+//
+//        ListNode listNode = swapPairs(head1);
 
 //        boolean palindrome = isPalindrome(head1);
 //        System.out.println(palindrome);
@@ -48,15 +57,41 @@ public class LinkList {
 
 
     public static ListNode initLink() {
-        ListNode a = new ListNode(2);
+        ListNode a = new ListNode(1);
         ListNode b = new ListNode(3);
         ListNode c = new ListNode(4);
-        ListNode d = new ListNode(5);
-        ListNode e = new ListNode(6);
+//        ListNode d = new ListNode(5);
+//        ListNode e = new ListNode(6);
         a.next = b;
         b.next = c;
-        c.next = d;
-        d.next = e;
+//        c.next = d;
+//        d.next = e;
+        return a;
+    }
+
+    public static ListNode initLink1() {
+        ListNode a = new ListNode(1);
+        ListNode b = new ListNode(4);
+        ListNode c = new ListNode(5);
+//        ListNode d = new ListNode(5);
+//        ListNode e = new ListNode(6);
+        a.next = b;
+        b.next = c;
+//        c.next = d;
+//        d.next = e;
+        return a;
+    }
+
+    public static ListNode initLink2() {
+        ListNode a = new ListNode(2);
+        ListNode b = new ListNode(6);
+        ListNode c = new ListNode(4);
+//        ListNode d = new ListNode(5);
+//        ListNode e = new ListNode(6);
+        a.next = b;
+//        b.next = c;
+//        c.next = d;
+//        d.next = e;
         return a;
     }
 
@@ -215,6 +250,175 @@ public class LinkList {
             right--;
         }
         return true;
+    }
+
+    public static int[] reversePrint(ListNode head) {
+        Deque<Integer> stack = new LinkedList<Integer>();
+        while(head != null){
+            stack.push(head.val);
+            head = head.next;
+        }
+        int[] nums = new int[stack.size()];
+        int size = stack.size();
+        for(int i =0; i < size; i++){
+            nums[i] = stack.pop();
+        }
+        return nums;
+    }
+
+    public static ListNode reverseKGroup(ListNode head, int k){
+        if (head == null || head.next == null){
+            return head;
+        }
+        ListNode dummy=new ListNode(0);
+        dummy.next=head;
+        //初始化pre和end都指向dummy。pre指每次要翻转的链表的头结点的上一个节点。end指每次要翻转的链表的尾节点
+        ListNode pre=dummy;
+        ListNode end=dummy;
+        while(end.next!=null){
+            //循环k次，找到需要翻转的链表的结尾,这里每次循环要判断end是否等于空,因为如果为空，end.next会报空指针异常。
+            //dummy->1->2->3->4->5 若k为2，循环2次，end指向2
+            for(int i=0;i<k&&end != null;i++){
+                end=end.next;
+            }
+            //如果end==null，即需要翻转的链表的节点数小于k，不执行翻转。
+            if(end==null){
+                break;
+            }
+            //先记录下end.next,方便后面链接链表
+            ListNode next=end.next;
+            //然后断开链表
+            end.next=null;
+            //记录下要翻转链表的头节点
+            ListNode start=pre.next;
+            //翻转链表,pre.next指向翻转后的链表。1->2 变成2->1。 dummy->2->1
+            pre.next=reverse(start);
+            //翻转后头节点变到最后。通过.next把断开的链表重新链接。
+            start.next=next;
+            //将pre换成下次要翻转的链表的头结点的上一个节点。即start
+            pre=start;
+            //翻转结束，将end置为下次要翻转的链表的头结点的上一个节点。即start
+            end=start;
+        }
+        return dummy.next;
+    }
+    public static ListNode reverse(ListNode head){
+        if (head == null || head.next == null){
+            return head;
+        }
+        ListNode prev = null;
+        ListNode next = null;
+        while (head != null) {
+            next = head.next;
+            head.next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+
+    public static ListNode detectCycle(ListNode head){
+        ListNode fast = head, slow = head;
+        while (true) {
+            if (fast == null || fast.next == null) return null;
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) break;
+        }
+        fast = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return fast;
+    }
+
+    // 1-3-5 1-4-6 2-6
+    public static ListNode mergeKLists(ListNode[] lists) {
+        Queue<ListNode> pq = new PriorityQueue<>((v1, v2) -> v1.val - v2.val);
+        for (ListNode node: lists) {
+            if (node != null) {
+                pq.offer(node);
+            }
+        }
+
+        ListNode dummyHead = new ListNode(0);
+        ListNode tail = dummyHead;
+        while (!pq.isEmpty()) {
+            ListNode minNode = pq.poll();
+            tail.next = minNode;
+            tail = tail.next;
+            if (minNode.next != null) {
+                pq.offer(minNode.next);
+            }
+        }
+
+        return dummyHead.next;
+    }
+
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        // 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论
+        ListNode dummyNode = new ListNode(-1);
+        dummyNode.next = head;
+
+        ListNode pre = dummyNode;
+        // 第 1 步：从虚拟头节点走 left - 1 步，来到 left 节点的前一个节点
+        // 建议写在 for 循环里，语义清晰
+        for (int i = 0; i < left - 1; i++) {
+            pre = pre.next;
+        }
+
+        // 第 2 步：从 pre 再走 right - left + 1 步，来到 right 节点
+        ListNode rightNode = pre;
+        for (int i = 0; i < right - left + 1; i++) {
+            rightNode = rightNode.next;
+        }
+
+        // 第 3 步：切断出一个子链表（截取链表）
+        ListNode leftNode = pre.next;
+        ListNode curr = rightNode.next;
+
+        // 注意：切断链接
+        pre.next = null;
+        rightNode.next = null;
+
+        // 第 4 步：同第 206 题，反转链表的子区间
+        reverse(leftNode);
+
+        // 第 5 步：接回到原来的链表中
+        pre.next = rightNode;
+        leftNode.next = curr;
+        return dummyNode.next;
+    }
+
+    public ListNode reverseBetween2(ListNode head, int left, int right) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        ListNode pre = dummy;
+
+        for(int i = 0; i < left - 1; i++) {
+            pre = pre.next;
+        }
+
+        ListNode end = pre;
+
+        for(int i = 0; i < right - left + 1; i++) {
+            end = end.next;
+        }
+
+        ListNode start = pre.next;
+        ListNode next = end.next;
+
+        pre.next = null;
+        end.next = null;
+
+        reverse(start);
+
+        pre.next = end;
+        start.next = next;
+
+        return dummy.next;
     }
 
 }
