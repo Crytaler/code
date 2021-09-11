@@ -286,4 +286,77 @@ public class Array {
         }
         return res;
     }
+
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length == 0) {
+            return new int[0][2];
+        }
+        Arrays.sort(intervals,(v1,v2) -> v1[0] - v2[0]);
+
+        List<int[]> res = new ArrayList<>();
+        for (int i = 0; i < intervals.length; i++) {
+            int L = intervals[i][0], R = intervals[i][1];
+            if (res.size() == 0 || res.get(res.size()-1)[1] < L) {
+                res.add(new int[]{L,R});
+            }else {
+                res.get(res.size()-1)[1] = Math.max(R,res.get(res.size()-1)[1]);
+            }
+
+        }
+        return res.toArray(new int[res.size()][]);
+    }
+
+    public void nextPermutation(int[] nums) {
+        if(nums == null || nums.length == 0) {
+            return;
+        }
+        int firstIndex = -1;
+        for(int k = nums.length - 2; k >= 0; k--) {
+            if(nums[k] < nums[k+1]) {
+                firstIndex = k;
+                break;
+            }
+        }
+        if(firstIndex == -1) {
+            reverse(nums, 0 , nums.length-1);
+            return;
+        }
+        int secondIndex = -1;
+        for(int l = nums.length-1; l >= 0; l--) {
+            if(nums[l] > nums[firstIndex]) {
+                secondIndex = l;
+                break;
+            }
+        }
+        swap(nums,firstIndex,secondIndex);
+        reverse(nums,firstIndex+1, nums.length-1);
+    }
+
+    public void reverse(int[] nums, int i, int j) {
+        while(i < j) {
+            swap(nums,i++,j--);
+        }
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    // abbaaca 数组模拟栈
+    public String removeDuplicates(String s) {
+        char[] charArray = s.toCharArray();
+        char[] res = new char[s.length()];
+        int left = 0, right = -1;
+        for(char c : charArray) {
+            if(left <= right && res[right] == c) {
+                --right;
+            }else {
+                res[++right] = c;
+            }
+        }
+        return new String(res, 0, right+1);
+    }
+
 }
