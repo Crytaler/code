@@ -421,4 +421,61 @@ public class LinkList {
         return dummy.next;
     }
 
+    public ListNode sortList(ListNode head) {
+        if(head == null) {
+            return head;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a,b) -> a-b);
+        while(head != null) {
+            queue.offer(head.val);
+            head = head.next;
+        }
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+
+        while(!queue.isEmpty()) {
+            Integer node = queue.poll();
+            ListNode res = new ListNode(node);
+            cur.next = res;
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+
+    public void reorderList(ListNode head) {
+        if(head == null) {
+            return;
+        }
+        ListNode mid =  middleNode(head);
+        ListNode l1 = head;
+        ListNode l2 = mid.next;
+        mid.next = null;
+        l2 = reverseList(l2);
+        merge(l1,l2);
+    }
+
+    public ListNode middleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    public void merge(ListNode l1, ListNode l2) {
+        ListNode cur1 ;
+        ListNode cur2 ;
+        while(l1 != null && l2 != null) {
+            cur1 = l1.next;
+            cur2 = l2.next;
+
+            l1.next = l2;
+            l1 = cur1;
+
+            l2.next = l1;
+            l2 =cur2;
+        }
+    }
+
 }

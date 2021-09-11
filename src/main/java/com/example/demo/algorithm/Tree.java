@@ -1,5 +1,7 @@
 package com.example.demo.algorithm;
 
+import org.apache.commons.compress.utils.Lists;
+
 import java.util.*;
 
 /**
@@ -257,6 +259,47 @@ public class Tree {
         if (root == null)
             return 0;
         return Math.max(depth(root.left), depth(root.right)) + 1;
+    }
+
+    int maxSum = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        maxGain(root);
+        return maxSum;
+    }
+
+    public int maxGain(TreeNode node) {
+        if(node == null) {
+            return 0;
+        }
+        int leftGain = Math.max(maxGain(node.left),0);
+        int rightGain = Math.max(maxGain(node.right),0);
+
+        int tempSum = node.val + leftGain + rightGain;
+        maxSum = Math.max(tempSum,maxSum);
+
+        return node.val + Math.max(leftGain,rightGain);
+    }
+
+    List<List<Integer>> res = new ArrayList<>();
+    Deque<Integer> path = new LinkedList<>();
+
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        dfs(root,targetSum);
+        return res;
+    }
+
+    public void dfs(TreeNode root , int targetSum) {
+        if(root == null) {
+            return;
+        }
+        path.offerLast(root.val);
+        targetSum -= root.val;
+        if(root.left == null && root.right == null && targetSum == 0) {
+            res.add(new ArrayList<>(path));
+        }
+        dfs(root.left,targetSum);
+        dfs(root.right,targetSum);
+        path.pollLast();
     }
 
 }

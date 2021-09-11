@@ -98,4 +98,24 @@ public class Mathematics {
         }
         return sb.reverse().toString();
     }
+
+    public static int missingNumber(int[] nums) {
+        int len = nums.length;
+        int total = len*(len + 1)/2;// 高斯公式
+        int sum = 0;
+        for(int num : nums) {
+            sum += num;
+        }
+        return total - sum;
+    }
+
+//    public int rand10() {
+//        while (true) {
+//            int num = (rand7() - 1) * 7 + rand7();
+//            // 生成的如果是41~49，则重新生成
+//            if(num <= 40) {
+//                return num % 10 + 1;
+//            }
+//        }
+//    }
 }

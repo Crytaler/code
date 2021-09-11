@@ -6,9 +6,10 @@ import java.util.Deque;
 
 public class Stringtest {
     public static void main(String[] args) {
-        String s = "We are happy";
-        String s1 = replaceSpace(s);
-        System.out.println(s1);
+//        String s = "We are happy";
+//        String s1 = replaceSpace(s);
+        int i = myAto("-2147483647");
+        System.out.println(i);
 //        String[] arr = {"flower","flow","flight"};
 //        String s = longestCommonPrefix(arr);
 //        System.out.println(s);
@@ -125,4 +126,90 @@ public class Stringtest {
         return String.join(" ", d);
     }
 
+    public static   String longestPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        int strLen = s.length(), left = 0, right = 0, len = 1, maxStart = 0, maxLen = 0;
+
+        for (int i = 0; i < strLen; i++) {
+            left = i - 1;
+            right = i + 1;
+            while (left >= 0 && s.charAt(left) == s.charAt(i)) {
+                len++;
+                left--;
+            }
+            while (right < strLen && s.charAt(right) == s.charAt(i)) {
+                len++;
+                right++;
+            }
+            while (left >= 0 && right < strLen && s.charAt(right) == s.charAt(left)) {
+                len = len + 2;
+                left--;
+                right++;
+            }
+            if (len > maxLen) {
+                maxLen = len;
+                maxStart = left;
+            }
+            len = 1;
+        }
+        return s.substring(maxStart + 1, maxStart + maxLen + 1);
+    }
+
+    public static int myAto(String str) {
+        int len = str.length();
+        int index = 0;
+        while (index < len && str.charAt(index) == ' ') {
+            index++;
+        }
+        if (index == len) {
+            return 0;
+        }
+        int sign = 1;
+        if (str.charAt(index) == '+') {
+            index++;
+        }else if (str.charAt(index) == '-') {
+            index++;
+            sign = -1;
+        }
+        int res = 0;
+        while (index < len) {
+            char c = str.charAt(index);
+            if (c < '0' || c > '9') {
+                break;
+            }
+
+            if (res > Integer.MAX_VALUE / 10 || (res == Integer.MAX_VALUE / 10 && (c - '0') > Integer.MAX_VALUE % 10) ) {
+                return Integer.MAX_VALUE;
+            }
+            if (res < Integer.MIN_VALUE/10 || (res == Integer.MIN_VALUE/10 && (c - '0') > -(Integer.MIN_VALUE % 10))) {
+                return Integer.MIN_VALUE;
+            }
+            res = res * 10 + sign * (c - '0');
+            index++;
+        }
+        return res;
+    }
+
+    public boolean isPalindrome(String s) {
+        int n = s.length();
+        int left = 0, right = n - 1;
+        while(left < right) {
+            while(left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                ++left;
+            }
+            while(left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                --right;
+            }
+            if(left < right) {
+                if(Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                    return false;
+                }
+                ++left;
+                --right;
+            }
+        }
+        return true;
+    }
 }
