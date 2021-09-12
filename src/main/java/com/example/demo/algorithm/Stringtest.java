@@ -8,8 +8,10 @@ public class Stringtest {
     public static void main(String[] args) {
 //        String s = "We are happy";
 //        String s1 = replaceSpace(s);
-        int i = myAto("-2147483647");
-        System.out.println(i);
+//        int i = myAto("-2147483647");
+//        System.out.println(i);
+        String s = reverseWordsIII("Let's take LeetCode contest");
+        System.out.println(s);
 //        String[] arr = {"flower","flow","flight"};
 //        String s = longestCommonPrefix(arr);
 //        System.out.println(s);
@@ -211,5 +213,29 @@ public class Stringtest {
             }
         }
         return true;
+    }
+
+    public String reverseWordsIII(String s) {
+        int len = s.length();
+        int i = 0;
+        char[] charArray = s.toCharArray();
+        while(i < len) {
+            int start = i;
+            while(i < len && s.charAt(i) != ' ') {
+                i++;
+            }
+            int left = start, right = i - 1;
+            while(left < right) {
+                char tmp = charArray[left];
+                charArray[left] = charArray[right];
+                charArray[right] = tmp;
+                left++;
+                right--;
+            }
+            while(i < len && s.charAt(i) == ' ') {
+                i++;
+            }
+        }
+        return new String(charArray,0,len);
     }
 }

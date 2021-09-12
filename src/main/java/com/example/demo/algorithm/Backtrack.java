@@ -149,4 +149,38 @@ public class Backtrack {
         return res;
     }
 
+    // n是括号对数，lc是左括号数量，rc是右括号数量，str是当前维护的合法括号序列。
+    //
+    //搜索过程如下：
+    //
+    //1、初始时定义序列的左括号数量lc 和右括号数量rc都为0。
+    //2、如果 lc < n，左括号的个数小于n，则在当前序列str后拼接左括号。
+    //3、如果 rc < n && lc > rc , 右括号的个数小于左括号的个数，则在当前序列str后拼接右括号。
+    //4、当lc == n && rc == n 时，将当前合法序列str加入答案数组res中。
+
+    List<String> res = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        if(n == 0) {
+            return res;
+        }
+        dfs(n,0,0,"");
+        return res;
+    }
+
+    public void dfs(int n, int lc, int rc, String str) {
+        if(lc == n && rc == n) {
+            res.add(str);
+        }else {
+            if(lc < n) {
+                dfs(n, lc+1, rc, str+"(");
+            }
+            if(rc < n && rc < lc) {
+                dfs(n,lc, rc+1, str+")");
+            }
+        }
+
+    }
+
+
+
 }
